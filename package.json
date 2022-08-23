@@ -47,5 +47,6 @@
   },
   "devDependencies": {
     "gh-pages": "^4.0.0"
-  }
+  },
+  "homepage": "https://ivk101.github.io/unsplash-skillbox/"
 }
