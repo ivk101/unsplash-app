@@ -10,8 +10,7 @@ import Unsplash, {
     toJson
 } from 'unsplash-js';
 import { useSelector, useDispatch } from 'react-redux';
-import { setAccessTokenUnplash } from '../unsplash';
-import { addValues } from '../features/photos/photosSlice'
+import { addValues, increaseStartNumber } from '../features/photos/photosSlice'
 
 
 function Auth() { 
@@ -20,6 +19,17 @@ function Auth() {
 	secret: 'oirSNKhRzQ36g4X8N-uT0_UynAKtu-T2vw9Leo9tVs0',
 	callbackUrl: 'http://localhost:3000/auth'
 });
+  const authenticationUrl = unsplash.auth.getAuthenticationUrl([
+  "public",
+  "write_likes"
+]);
+  const setAccessTokenUnplash = (code) => {
+    unsplash.auth.userAuthentication(code)
+        .then(res => res.json())
+        .then(json =>
+            localStorage.setItem('token', json.access_token)
+        );
+};
 
 	if (localStorage.getItem('token') === 'undefined' || localStorage.getItem('token') === '' || !localStorage.getItem('token')) {
             setAccessToken(); 
@@ -32,38 +42,66 @@ function Auth() {
             setAccessTokenUnplash(code);
         }
     }
+
     
-	const dispatch = useDispatch();
+    const count = useSelector((state) => state.photos.data) 
+          
+    const [items, setItems] = useState(count);
 
-    const [items, setItems] = useState([]);
+    const dispatch = useDispatch();
     let lastLoadedPage = useRef(0);
+    const start1 = useSelector((state) => state.photos.startNumber)
 
+    
     const loadMore = () => {
-      unsplash.photos.listPhotos(lastLoadedPage.current + 10, 10, "latest")
+
+      
+      
+      
+      //let start = window.localStorage.getItem('start');
+      
+
+        // const data = listPhoto(+start, +end, localStorage.getItem('token'))
+        // data.then(d => this.props.loadPhoto(d));
+        // window.localStorage.setItem('start', +start + 10);
+      unsplash.photos.listPhotos(start1 + 10, 10, "latest")
         .then(toJson)
         .then(newItems => { 
           lastLoadedPage.current += 10; 
-          setItems((currentItems) => currentItems.concat(newItems));          
+          //window.localStorage.setItem('start', +start + 10);
+          setItems((items) => items.concat(newItems));  
+          dispatch(addValues(newItems))   
+          dispatch(increaseStartNumber(10))      
         });
+        //window.localStorage.removeItem('start');
     }
-    dispatch(addValues(items))
     
+    //dispatch(addValues(items))
+    console.log(items)
 
-    const onscroll = ({target}) => {
-      if ( target.scrollTop + target.clientHeight >= target.scrollHeight ) {
-        loadMore();
+   useEffect(() => {
+      if(items.length == 0) {
+        loadMore()
       }      
-    }
-
-    useEffect(() => {
-      const scrollContainer = document.body;
-      scrollContainer.addEventListener("scroll", onscroll);
-      loadMore();
-
-      return () => {
-        scrollContainer.removeEventListener("scroll", onscroll);
-      }
     }, [])
+     
+
+    // const onscroll = ({target}) => {
+    //   if ( target.scrollTop + target.clientHeight >= target.scrollHeight ) {
+    //     //console.log(start1)
+    //     loadMore();
+    //   }      
+    // }
+
+    // useEffect(() => {
+    //   const scrollContainer = document.body;
+    //   scrollContainer.addEventListener("scroll", onscroll);
+    //   //loadMore();
+
+    //   return () => {
+    //     scrollContainer.removeEventListener("scroll", onscroll);
+    //   }
+    // }, [])
 
 
     const listItems = items.map((item, index) =>
