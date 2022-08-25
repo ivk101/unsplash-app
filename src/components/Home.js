@@ -10,7 +10,7 @@ function App() {
 	const handleClick = () => {
 	    window.location.assign(authenticationUrl);
 	}
-
+    
 	const token = localStorage.getItem('token');
 
 	return (

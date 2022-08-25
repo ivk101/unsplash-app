@@ -10,14 +10,14 @@ import Unsplash, {
     toJson
 } from 'unsplash-js';
 import { useSelector, useDispatch } from 'react-redux';
-import { addValues, increaseStartNumber } from '../features/photos/photosSlice'
+import { addValues } from '../features/photos/photosSlice'
 
 
 function Auth() { 
 	const unsplash = new Unsplash({ 
 	accessKey: 'UNn5owZvWC7Ia3Wq6ucOuhKo-lm9qC_OGaZwbBBmt6g',
 	secret: 'oirSNKhRzQ36g4X8N-uT0_UynAKtu-T2vw9Leo9tVs0',
-	callbackUrl: 'http://localhost:3000/auth'
+	callbackUrl: 'http://irinaislam.temp.swtest.ru/auth'
 });
   const authenticationUrl = unsplash.auth.getAuthenticationUrl([
   "public",
@@ -44,64 +44,71 @@ function Auth() {
     }
 
     
-    const count = useSelector((state) => state.photos.data) 
+    const data = useSelector((state) => state.photos.data) 
           
-    const [items, setItems] = useState(count);
+    const [items, setItems] = useState(data);
 
     const dispatch = useDispatch();
-    let lastLoadedPage = useRef(0);
-    const start1 = useSelector((state) => state.photos.startNumber)
 
     
-    const loadMore = () => {
+    const loadMore = () => {        
+      
+      let start = window.localStorage.getItem('start');
 
-      
-      
-      
-      //let start = window.localStorage.getItem('start');
-      
-
-        // const data = listPhoto(+start, +end, localStorage.getItem('token'))
-        // data.then(d => this.props.loadPhoto(d));
-        // window.localStorage.setItem('start', +start + 10);
-      unsplash.photos.listPhotos(start1 + 10, 10, "latest")
+      unsplash.photos.listPhotos(+start + 10, 10, "latest")
         .then(toJson)
         .then(newItems => { 
-          lastLoadedPage.current += 10; 
-          //window.localStorage.setItem('start', +start + 10);
+          window.localStorage.setItem('start', +start + 10);
           setItems((items) => items.concat(newItems));  
-          dispatch(addValues(newItems))   
-          dispatch(increaseStartNumber(10))      
+          dispatch(addValues(newItems))        
         });
-        //window.localStorage.removeItem('start');
+       
     }
-    
-    //dispatch(addValues(items))
-    console.log(items)
 
+   
+    
    useEffect(() => {
+     // const scrollContainer = document.body;
+     // let test1 = window.sessionStorage.getItem('scrollPosition')
+     
+     // if (test1) {
+     //    scrollContainer.scrollTop = test1;
+     //    console.log(scrollContainer.scrollTop)
+     //  }
       if(items.length == 0) {
         loadMore()
       }      
     }, [])
-     
+ 
 
-    // const onscroll = ({target}) => {
-    //   if ( target.scrollTop + target.clientHeight >= target.scrollHeight ) {
-    //     //console.log(start1)
-    //     loadMore();
-    //   }      
-    // }
 
-    // useEffect(() => {
-    //   const scrollContainer = document.body;
-    //   scrollContainer.addEventListener("scroll", onscroll);
-    //   //loadMore();
+    const onscroll = ({target}) => {
 
-    //   return () => {
-    //     scrollContainer.removeEventListener("scroll", onscroll);
-    //   }
-    // }, [])
+      if ( target.scrollTop + target.clientHeight >= target.scrollHeight ) {
+        loadMore();
+      }      
+    }
+
+    useEffect(() => {
+      
+
+      const scrollContainer = document.body;
+      // const test = document.getElementsByClassName('container')[0];
+      scrollContainer.addEventListener("scroll", onscroll);
+      // scrollContainer.addEventListener("scroll", () => {
+        
+      //   let selector = document.body; 
+      //   window.sessionStorage.setItem('scrollPosition', selector.scrollTop)
+      //   console.log(window.sessionStorage.getItem('scrollPosition'))
+
+      // });
+      
+
+      return () => {
+        scrollContainer.removeEventListener("scroll", onscroll);
+        setItems([]);  
+      }
+    }, [])
 
 
     const listItems = items.map((item, index) =>

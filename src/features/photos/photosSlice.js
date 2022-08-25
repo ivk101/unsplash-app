@@ -3,8 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const photosSlice = createSlice({
   name: 'photos',
   initialState: {
-    data: [],
-    startNumber: 0
+    data: []
   },
   reducers: {    
     addValues: (state, action) => {   
@@ -19,15 +18,11 @@ export const photosSlice = createSlice({
       let detailPhoto = state.data.find(item => item.id === action.payload )
       detailPhoto.likes -= 1
       detailPhoto.liked_by_user = !detailPhoto.liked_by_user;
-    },
-    increaseStartNumber: (state, action) => {
-      console.log(action.payload)
-      state.startNumber += action.payload;
-    },
+    },    
   }
 })
 
 // Action creators are generated for each case reducer function
-export const { addValues, increaseLike, decreaseLike, increaseStartNumber } = photosSlice.actions;
+export const { addValues, increaseLike, decreaseLike } = photosSlice.actions;
 
 export default photosSlice.reducer;

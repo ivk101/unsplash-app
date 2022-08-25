@@ -16,7 +16,7 @@ import { increaseLike, decreaseLike } from '../features/photos/photosSlice'
 const unsplash = new Unsplash({ 
   accessKey: 'UNn5owZvWC7Ia3Wq6ucOuhKo-lm9qC_OGaZwbBBmt6g',
   secret: 'oirSNKhRzQ36g4X8N-uT0_UynAKtu-T2vw9Leo9tVs0',
-  callbackUrl: 'http://localhost:3000/auth'
+  callbackUrl: 'http://irinaislam.temp.swtest.ru/auth'
 });
 
 

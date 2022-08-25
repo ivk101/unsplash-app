@@ -1,5 +1,6 @@
+
 {
-  "name": "unsplash-app",
+  "name": "photogallery",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -47,6 +48,5 @@
   },
   "devDependencies": {
     "gh-pages": "^4.0.0"
-  },
-  "homepage": "https://ivk101.github.io/unsplash-skillbox/"
+  }
 }
