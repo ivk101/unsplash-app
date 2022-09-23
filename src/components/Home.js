@@ -16,7 +16,7 @@ function App() {
         </div>
       </header>
       <div className="registration">
-        <p>Авторизация через Unslash.com</p>
+        <p>Авторизация через Unsplash.com</p>
         <button className="button_auth" onClick={handleClick}>
           Authorization
         </button>
